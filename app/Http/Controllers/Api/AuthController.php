@@ -50,12 +50,10 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $user = $request->user();
-    
-        // Revoke access token
+ 
         $accessToken = $user->token();
         $accessToken->revoke();
-    
-        // Revoke refresh token yang terkait
+
         DB::table('oauth_refresh_tokens')
             ->where('access_token_id', $accessToken->id)
             ->update(['revoked' => true]);

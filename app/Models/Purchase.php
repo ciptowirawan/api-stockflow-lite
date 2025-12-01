@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Purchase extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, Auditable;
 
     protected $guarded = ['id'];
 
@@ -18,4 +18,9 @@ class Purchase extends Model
     public function details() {
         return $this->hasMany(PurchaseDetail::class, 'purchase_id', 'id');
     }
+
+    public function createdBy() {
+        return $this->belongsTo(User::class, 'created_by', 'id');
+    }
+
 }

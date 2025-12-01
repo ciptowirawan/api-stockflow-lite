@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+
+class UserRequest extends FormRequest
+{
+    public function authorize()
+    {
+        return true;
+    }
+
+    public function rules()
+    {
+        $userId = $this->route('user')?->id;
+
+        return [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users,email,' . $userId,
+            'password' => $this->isMethod('post')
+                ? 'required|string|min:8|max:255'
+                : 'sometimes|string|min:8|max:255',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'name.required' => 'Nama user wajib diisi.',
+            'email.required' => 'Email wajib diisi.',
+            'email.unique' => 'Email sudah digunakan.',
+            'password.required' => 'Password wajib diisi saat membuat user.',
+        ];
+    }
+}

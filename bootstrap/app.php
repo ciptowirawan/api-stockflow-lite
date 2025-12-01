@@ -38,7 +38,6 @@ return Application::configure(basePath: dirname(__DIR__))
                 }
             }
         
-            // lalu tangani AuthenticationException
             if ($e instanceof \Illuminate\Auth\AuthenticationException) {
                 return response()->json([
                     'success' => false,

@@ -21,7 +21,9 @@ return Application::configure(basePath: dirname(__DIR__))
         PassportServiceProvider::class,
     ])
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        $middleware->alias([
+            'api.auth.web' => \App\Http\Middleware\EnsureApiAuthenticated::class,
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {
         $exceptions->render(function (Throwable $e, Request $request) {

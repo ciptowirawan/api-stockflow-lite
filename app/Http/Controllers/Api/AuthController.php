@@ -37,6 +37,13 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
+        session([
+            'username' => $user->name,
+            'access_token' => $tokenData['access_token'],
+            'token_type'   => $tokenData['token_type'],
+            'expires_in'   => $tokenData['expires_in'],
+        ]);
+
         $data = (object) [
             'access_token'  => $tokenData['access_token'],
             'expires_in'    => $tokenData['expires_in'],
@@ -50,6 +57,23 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $user = $request->user();
+
+        if (!$user && session()->has('access_token')) {
+            $token = session('access_token');
+            
+            $oauthAccessToken = DB::table('oauth_access_tokens')->where('id', $token)->first();
+            
+            if ($oauthAccessToken) {
+                $user = User::find($oauthAccessToken->user_id);
+            }
+        }
+
+        if (!$user) {
+            return response()->json([
+                'message' => 'User not authenticated or token already revoked.',
+                'data'    => []
+            ], 401);
+        }
  
         $accessToken = $user->token();
         $accessToken->revoke();
@@ -57,6 +81,8 @@ class AuthController extends Controller
         DB::table('oauth_refresh_tokens')
             ->where('access_token_id', $accessToken->id)
             ->update(['revoked' => true]);
+
+        session()->forget(['username', 'access_token', 'token_type', 'expires_in']);
     
         return response()->json([
             'message' => 'Logout berhasil. Token telah dicabut.',

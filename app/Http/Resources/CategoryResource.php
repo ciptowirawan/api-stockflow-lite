@@ -9,8 +9,8 @@ class CategoryResource extends JsonResource
     public function toArray($request)
     {
         return [
-            'id'         => $this->id,
-            'name'       => $this->name,
+            'id' => $this->id,
+            'name' => $this->name,
             'created_by' => new UserResource($this->whenLoaded('createdBy')),
             'updated_by' => new UserResource($this->whenLoaded('updatedBy')),
             'created_at' => $this->created_at?->toDateTimeString(),

@@ -9,8 +9,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PurchaseDetail extends Model
 {
-    use SoftDeletes;
-
     protected $guarded = ['id'];
 
     public function purchase() {

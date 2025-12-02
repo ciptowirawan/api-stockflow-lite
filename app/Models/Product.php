@@ -20,7 +20,7 @@ class Product extends Model
     }
 
     public function stock() {
-        return $this->hasOne(Stock::class, 'stock_id', 'id');
+        return $this->hasOne(Stock::class);
     }
 
     public function stock_details() {

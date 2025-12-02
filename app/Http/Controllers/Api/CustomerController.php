@@ -13,6 +13,12 @@ class CustomerController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
+
+        if ($perPage === 'all') {
+            $customers = Customer::all();
+            return CustomerResource::collection($customers);
+        }
+        
         $customers = Customer::paginate($perPage);
         
         if ($customers->count() > 0) {

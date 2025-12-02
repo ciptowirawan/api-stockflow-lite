@@ -17,8 +17,32 @@ class StockDetailRequest extends FormRequest
             'product_id' => 'required|exists:products,id',
             'quantity' => 'required|integer|not_in:0',
             'type' => 'required|in:P_RET,S_RET,ADJ',
-            'created_by' => 'nullable|exists:users,id',
         ];
+    }
+
+    public function withValidator($validator)
+    {
+        $validator->after(function ($validator) {
+            $type = $this->input('type');
+            $quantity = $this->input('quantity');
+
+            switch ($type) {
+                case 'P_RET':
+                    if ($quantity >= 0) {
+                        $validator->errors()->add('quantity', 'Purchase return must have negative quantity.');
+                    }
+                    break;
+
+                case 'S_RET':
+                    if ($quantity <= 0) {
+                        $validator->errors()->add('quantity', 'Sales return must have positive quantity.');
+                    }
+                    break;
+
+                case 'ADJ':
+                    break;
+            }
+        });
     }
 
     public function messages()

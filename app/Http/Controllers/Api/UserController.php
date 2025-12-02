@@ -3,14 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
 use App\Http\Requests\UserRequest;
+use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    public function index(UserRequest $request)
+    public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
         $users   = User::paginate($perPage);

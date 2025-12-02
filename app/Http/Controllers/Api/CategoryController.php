@@ -13,6 +13,12 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
+
+        if ($perPage === 'all') {
+            $categories = Category::with('createdBy', 'updatedBy')->get();
+            return CategoryResource::collection($categories);
+        }
+
         $categories = Category::with('createdBy', 'updatedBy')->paginate($perPage);
         
         if ($categories->count() > 0) {

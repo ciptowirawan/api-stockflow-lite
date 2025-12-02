@@ -3,11 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Sale;
+use App\Models\Stock;
 use Illuminate\Http\Request;
+use App\Http\Requests\SaleRequest;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\SaleResource;
-use App\Http\Requests\SaleRequest;
 
 class SaleController extends Controller
 {
@@ -29,6 +31,8 @@ class SaleController extends Controller
 
         try {
 
+            Log::info('Incoming sale request', ['data' => $request->all()]);
+
             $sale = Sale::create($request->validated());
 
             foreach ($request->products as $item) {
@@ -38,7 +42,30 @@ class SaleController extends Controller
                     'price'       => $item['price'],
                     'total_price' => $item['qty'] * $item['price'],
                 ]);
+
+                $stock = Stock::where('product_id', $item['product_id'])
+                        ->lockForUpdate()
+                        ->first();
+    
+                if ($stock) {
+
+                    if ($stock->total_stock < $item['qty']) {
+                        DB::rollBack();
+                        return response()->json([
+                            'message' => 'Insufficient stock for product ID '.$item['product_id'],
+                            'current_stock' => $stock->total_stock
+                        ], 400);
+                    }
+
+                    $stock->decrement('total_stock', $item['qty']);
+                } else {
+                    DB::rollBack();
+                    return response()->json([
+                        'message' => 'Stock record not found for product ID '.$item['product_id']
+                    ], 404);
+                }
             }
+
 
             DB::commit();
 
@@ -66,10 +93,40 @@ class SaleController extends Controller
 
     public function destroy(Sale $sale)
     {
-        $sale->delete();
+        DB::beginTransaction();
 
-        return response()->json([
-            'message' => 'Sale deleted successfully'
-        ], 200);
+        try {
+            $details = $sale->details()->get();
+
+            foreach ($details as $detail) {
+                $stock = Stock::where('product_id', $detail->product_id)
+                            ->lockForUpdate()
+                            ->first();
+
+                if ($stock) {
+                    $stock->increment('total_stock', $detail->qty);
+                }
+            }
+            
+            $sale->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Sale cancelled and stock restored successfully'
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Sale cancel failed: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            return response()->json([
+                'message' => 'Failed to cancel sale',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
     }
+
 }

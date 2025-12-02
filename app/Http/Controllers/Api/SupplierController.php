@@ -13,6 +13,12 @@ class SupplierController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
+
+        if ($perPage === 'all') {
+            $suppliers = Supplier::all();
+            return SupplierResource::collection($suppliers);
+        }
+
         $suppliers = Supplier::paginate($perPage);
         
         if ($suppliers->count() > 0) {

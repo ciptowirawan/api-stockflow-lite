@@ -20,8 +20,10 @@ Route::middleware('auth:api')->group(function () {
     Route::apiResource('users', UserController::class);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('products', ProductController::class);
-    Route::get('product/getByCategory', [ProductController::class, 'getByCategory']);
+
+    Route::get('products/category/{categoryId}', [ProductController::class, 'getByCategory']);
     Route::apiResource('customers', CustomerController::class);
+    
     Route::apiResource('suppliers', SupplierController::class);
     Route::apiResource('stock-details', StockDetailController::class);
     Route::apiResource('sales', SaleController::class);

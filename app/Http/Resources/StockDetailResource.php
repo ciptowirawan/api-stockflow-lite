@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Http\Resources\UserResource;
+use App\Http\Resources\ProductResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class StockDetailResource extends JsonResource
@@ -11,7 +12,7 @@ class StockDetailResource extends JsonResource
     {
         return [
             'id'          => $this->id,
-            'product_id'  => $this->product_id,
+            'product'  => new ProductResource($this->whenLoaded('product')),
             'quantity'    => $this->quantity,
             'stock_after' => $this->stock_after,
             'type'        => $this->type,

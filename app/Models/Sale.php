@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Auditable;
 use App\Models\Customer;
+use App\Models\SaleDetail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -18,7 +19,7 @@ class Sale extends Model
     }
 
     public function details() {
-        return $this->hasMany(PurchaseDetail::class, 'purchase_id', 'id');
+        return $this->hasMany(SaleDetail::class);
     }
 
     public function createdBy() {

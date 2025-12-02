@@ -13,7 +13,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
-        $products = Product::with('category', 'createdBy', 'updatedBy')->paginate($perPage);
+        $products = Product::with('category', 'stock', 'createdBy', 'updatedBy')->paginate($perPage);
         
         if ($products->count() > 0) {
             return ProductResource::collection($products);

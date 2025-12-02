@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StockDetail extends Model
 {
-    use SoftDeletes, Auditable;
+    use Auditable;
 
     protected $guarded = ['id'];
 

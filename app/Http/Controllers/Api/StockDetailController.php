@@ -17,7 +17,7 @@ class StockDetailController extends Controller
     {
 
         $perPage = $request->get('per_page', 10);
-        $details   = StockDetail::paginate($perPage);
+        $details   = StockDetail::with('product', 'createdBy')->paginate($perPage);
 
         if ($details->count() > 0) {
             return StockDetailResource::collection($details);
@@ -68,6 +68,11 @@ class StockDetailController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
+
+            \Log::error('Stock Movement Failed: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             DB::rollBack();
             return response()->json([
                 'message' => 'Failed to process stock movement.',

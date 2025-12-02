@@ -2,26 +2,22 @@
 
 namespace App\Http\Resources;
 
-use App\Http\Resources\UserResource;
-use App\Http\Resources\StockResource;
-use App\Http\Resources\CategoryResource;
+use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ProductResource extends JsonResource
+class StockResource extends JsonResource
 {
     public function toArray($request)
     {
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'unit' => $this->unit,
-            'price' => $this->price,
-            'category' => new CategoryResource($this->whenLoaded('category')),
+            'product' => new ProductResource($this->whenLoaded('product')),
+            'total_stock' => $this->total_stock,
             'created_by' => new UserResource($this->whenLoaded('createdBy')),
             'updated_by' => new UserResource($this->whenLoaded('updatedBy')),
             'created_at' => $this->created_at?->toDateTimeString(),
             'updated_at' => $this->updated_at?->toDateTimeString(),
-            'stock' => new StockResource($this->whenLoaded('stock')),
+            'deleted_at' => $this->deleted_at?->toDateTimeString(),
         ];
     }
 }

@@ -30,14 +30,12 @@ return Application::configure(basePath: dirname(__DIR__))
             \Log::error(get_class($e) . 'info: ' . $e->getMessage());
 
             if ($e instanceof ValidationException) {
-                if ($request->expectsJson() || $request->is('api/*')) {
-                    return response()->json([
-                        'success' => false,
-                        'message' => 'Validation failed.',
-                        'errors' => $e->errors(),
-                        'data' => []
-                    ], 422);
-                }
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Validation failed.',
+                    'errors' => $e->errors(),
+                    'data' => []
+                ], 422);
             }
         
             if ($e instanceof \Illuminate\Auth\AuthenticationException) {

@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CategoryRequest extends FormRequest
@@ -13,17 +14,22 @@ class CategoryRequest extends FormRequest
 
     protected function prepareForValidation()
     {
-        $this->merge([
+        $this->merge([  
             'name' => strtoupper($this->name),
         ]);
     }
 
     public function rules()
     {
-        $categoryId = $this->route('category')?->id;
+        $categoryId = $this->route('category') ?? null;
         
         return [
-            'name' => 'required|string|max:255|unique:categories,name,' . $categoryId,
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('categories', 'name')->ignore($categoryId),
+            ],
         ];
     }
 

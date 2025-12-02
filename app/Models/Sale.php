@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Auditable;
 use App\Models\Customer;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Sale extends Model
 {

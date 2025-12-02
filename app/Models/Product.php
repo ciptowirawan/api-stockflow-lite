@@ -2,10 +2,12 @@
 
 namespace App\Models;
 
+use App\Auditable;
 use App\Models\Stock;
 use App\Models\Category;
 use App\Models\StockDetail;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {

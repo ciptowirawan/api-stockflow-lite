@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Models\Supplier;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\SupplierRequest;
 use App\Http\Resources\SupplierResource;
 
 class SupplierController extends Controller

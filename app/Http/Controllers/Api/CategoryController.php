@@ -40,7 +40,7 @@ class CategoryController extends Controller
 
     public function update(CategoryRequest $request, Category $category)
     {
-        $category = $category->update($request->validated());
+        $category->update($request->validated());
 
         return response()->json([
             'message' => 'Category Updated Successfully',

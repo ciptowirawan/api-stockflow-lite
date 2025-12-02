@@ -37,14 +37,15 @@ class AuthController extends Controller
 
         $user = User::where('email', $request->email)->first();
 
-        session([
-            'username' => $user->name,
-            'access_token' => $tokenData['access_token'],
-            'token_type'   => $tokenData['token_type'],
-            'expires_in'   => $tokenData['expires_in'],
-        ]);
+        // session([
+        //     'username' => $user->name,
+        //     'access_token' => $tokenData['access_token'],
+        //     'token_type'   => $tokenData['token_type'],
+        //     'expires_in'   => $tokenData['expires_in'],
+        // ]);
 
         $data = (object) [
+            'username' => $user->name,
             'access_token'  => $tokenData['access_token'],
             'expires_in'    => $tokenData['expires_in'],
             'token_type'    => $tokenData['token_type'],

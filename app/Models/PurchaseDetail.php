@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Product;
 use App\Models\Purchase;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PurchaseDetail extends Model
 {

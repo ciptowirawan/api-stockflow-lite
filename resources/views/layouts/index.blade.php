@@ -84,13 +84,13 @@
                 <div id="collapseDatatables" class="collapse" aria-labelledby="headingDatatables" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Manage:</h6>
-                        <a class="collapse-item" href="{{ route('users.index') }}"
+                        <a class="collapse-item" href="{{ route('manage.users.index') }}"
                         >Users</a>
-                        <a class="collapse-item" href="{{ route('categories.index') }}">Categories</a>
-                        <a class="collapse-item" href="{{ route('products.index') }}">Products</a>
-                        <a class="collapse-item" href="{{ route('stock-details.index') }}">Stocks</a>
-                        <a class="collapse-item" href="{{ route('customers.index') }}">Customers</a>                        
-                        <a class="collapse-item" href="{{ route('suppliers.index') }}">Suppliers</a>                        
+                        <a class="collapse-item" href="{{ route('manage.categories.index') }}">Categories</a>
+                        <a class="collapse-item" href="{{ route('manage.products.index') }}">Products</a>
+                        <a class="collapse-item" href="{{ route('manage.stock-details.index') }}">Stocks</a>
+                        <a class="collapse-item" href="{{ route('manage.customers.index') }}">Customers</a>                        
+                        <a class="collapse-item" href="{{ route('manage.suppliers.index') }}">Suppliers</a>                        
                     </div>
                 </div>
             </li>

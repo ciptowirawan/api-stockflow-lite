@@ -2,11 +2,13 @@
 
 namespace App\Models;
 
+use App\Auditable;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StockDetail extends Model
 {
-    use SoftDelete, Auditable;
+    use SoftDeletes, Auditable;
 
     protected $guarded = ['id'];
 

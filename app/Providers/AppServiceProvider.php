@@ -21,7 +21,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        \Laravel\Passport\Passport::loadKeysFrom(storage_path());
         Passport::enablePasswordGrant();
 
         Passport::tokensExpireIn(Carbon::now()->addHours(6));

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Http\Resources\UserResource;
 use App\Http\Resources\CustomerResource;
 use App\Http\Resources\SaleDetailResource;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -16,7 +17,7 @@ class SaleResource extends JsonResource
             'customer' => new CustomerResource($this->whenLoaded('customer')),
             'grand_total' => $this->grand_total,
             'paid_amount' => $this->paid_amount,
-            'created_by' => $this->created_by,
+            'created_by' => new UserResource($this->whenLoaded('createdBy')),
             'details' => SaleDetailResource::collection($this->whenLoaded('details')),
             'created_at' => $this->created_at,
         ];

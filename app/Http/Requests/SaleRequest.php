@@ -14,7 +14,7 @@ class SaleRequest extends FormRequest
     public function rules()
     {
         return [
-            'order_date' => 'required|date',
+            'order_date' => 'required|date|before_or_equal:today',
             'customer_id' => 'required|exists:customers,id',
             'grand_total' => 'required|numeric|min:0',
             
@@ -35,6 +35,13 @@ class SaleRequest extends FormRequest
             'products.*.product_id'  => 'required|exists:products,id',
             'products.*.qty' => 'required|integer|min:1',
             'products.*.price' => 'required|numeric|min:0',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'order_date.before_or_equal' => 'Tanggal order tidak boleh melebihi tanggal hari ini.',
         ];
     }
 }

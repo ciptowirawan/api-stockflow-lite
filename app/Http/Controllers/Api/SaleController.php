@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Sale;
 use App\Models\Stock;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Http\Requests\SaleRequest;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,7 @@ class SaleController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 10);
-        $sales = Sale::with('customer')->paginate($perPage);
+        $sales = Sale::with('customer', 'createdBy')->paginate($perPage);
 
         if ($sales->count() > 0) {
             return SaleResource::collection($sales);
@@ -46,13 +47,15 @@ class SaleController extends Controller
                 $stock = Stock::where('product_id', $item['product_id'])
                         ->lockForUpdate()
                         ->first();
+
+                $productName = Product::find($item['product_id'])?->name ?? $item['product_id'];
     
                 if ($stock) {
 
                     if ($stock->total_stock < $item['qty']) {
                         DB::rollBack();
                         return response()->json([
-                            'message' => 'Insufficient stock for product ID '.$item['product_id'],
+                            'message' => 'Insufficient stock for product Name '.$productName,
                             'current_stock' => $stock->total_stock
                         ], 400);
                     }
@@ -61,11 +64,10 @@ class SaleController extends Controller
                 } else {
                     DB::rollBack();
                     return response()->json([
-                        'message' => 'Stock record not found for product ID '.$item['product_id']
+                        'message' => 'Stock record not found for product Name '.$productName
                     ], 404);
                 }
             }
-
 
             DB::commit();
 
@@ -75,6 +77,11 @@ class SaleController extends Controller
             ], 201);
 
         } catch (\Exception $e) {
+
+            \Log::error('Sale Creation Failed: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+
             DB::rollBack();
 
             return response()->json([

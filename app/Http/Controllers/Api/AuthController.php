@@ -14,34 +14,25 @@ class AuthController extends Controller
 {
     public function login(LoginRequest $request)
     {
-        $response = Http::asForm()->timeout(60)->post(env("OAUTH_TOKEN_URL"), [
-            'grant_type' => 'password',
-            'client_id' => env('PASSPORT_PASSWORD_CLIENT_ID'),
-            'client_secret' => env('PASSPORT_PASSWORD_CLIENT_SECRET'),
-            'username' => $request->email,
-            'password' => $request->password,
-            'scope' => '',
-        ]);
-
-        if ($response->failed()) {
-            \Log::error('OAuth Token Request Failed: ' . $response->status());
-            \Log::debug('OAuth Response Body: ' . $response->body());
-
+        if (!auth()->attempt(['email' => $request->email, 'password' => $request->password])) {
             return response()->json([
                 'message' => 'Email atau password salah.',
-                'error'   => $response->json(),
             ], 401);
         }
 
-        $tokenData = $response->json();
+        $user = auth()->user();
 
-        $user = User::where('email', $request->email)->first();
+        $tokenResult = $user->createToken('Personal Access Token');
+        $token = $tokenResult->accessToken;
+
+        $expiresAt = $tokenResult->token->expires_at;
+        $expiresIn = $expiresAt ? now()->diffInSeconds($expiresAt, false) : null;
 
         $data = (object) [
             'username' => $user->name,
-            'access_token'  => $tokenData['access_token'],
-            'expires_in'    => $tokenData['expires_in'],
-            'token_type'    => $tokenData['token_type'],
+            'access_token'  => $token,
+            'expires_in'    => $expiresIn,
+            'token_type'    => 'Bearer',
             'user'          => $user,
         ];
 
